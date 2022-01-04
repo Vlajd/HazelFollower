@@ -26,6 +26,7 @@ project "Hazel"
 
 	includedirs {
 
+		"Hazel/src",
 		"%{prj.name}/vendor/spdlog/include"
 	}
 

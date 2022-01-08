@@ -1,4 +1,4 @@
-workspace "Hazel"
+workspace "HazelFollower"
 	architecture "x64"
 
 	configurations {
@@ -10,6 +10,15 @@ workspace "Hazel"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
+IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
+IncludeDir["ImGui"] = "Hazel/vendor/ImGui"
+
+include "Hazel/vendor/GLFW"
+include "Hazel/vendor/Glad"
+include "Hazel/vendor/ImGui"
+
 project "Hazel"
 	location "Hazel"
 	kind "SharedLib"
@@ -18,16 +27,31 @@ project "Hazel"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "hzpch.h"
+	pchsource "Hazel/src/hzpch.cpp"
+
 	files {
 
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		-- "%{prj.name}/vendor/ImGui/imgui_tables.cpp"
 	}
 
 	includedirs {
 
-		"Hazel/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/src",
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}"
+	}
+
+	links {
+
+		"GLFW",
+		"Glad",
+		"ImGui",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"
@@ -39,7 +63,9 @@ project "Hazel"
 
 			"HZ_PLATFORM_WINDOWS",
 			"HZ_BUILD_DLL",
-			"_WINDLL"
+			"_WINDLL",
+			"IMGUI_IMPL_OPENGL_LOADER_CUSTOM",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands {
@@ -49,14 +75,17 @@ project "Hazel"
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
+		buildoptions "/MD"
 		symbols "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
+		buildoptions "/MD"
 		symbols "On"
 
 project "Sandbox"
@@ -96,12 +125,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "HZ_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
+		buildoptions "/MD"
 		symbols "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
+		buildoptions "/MD"
 		symbols "On"

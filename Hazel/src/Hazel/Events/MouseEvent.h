@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Event.h"
-#include <sstream>
 
 namespace Hazel {
 
-	class HAZEL_API MouseMoveEvent : public Event {
+	class HAZEL_API MouseMovedEvent : public Event {
 
 		public:
-			MouseMoveEvent(float x, float y)
+			MouseMovedEvent(float x, float y)
 				: m_MouseX(x), m_MouseY(y) {}
 
 			inline float GetX() const { return m_MouseX; }

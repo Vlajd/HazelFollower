@@ -3,8 +3,12 @@
 class Sandbox : public Hazel::Application {
 
 	public:
-		Sandbox(){};
-		~Sandbox(){};
+		Sandbox() {
+		
+			PushOverlay(new Hazel::ImGuiLayer());
+		}
+
+		~Sandbox() {}
 };
 
 namespace Hazel {

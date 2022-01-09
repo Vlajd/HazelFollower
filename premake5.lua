@@ -16,6 +16,7 @@ workspace "HazelFollower"
 	IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 	IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 	IncludeDir["ImGui"] = "Hazel/vendor/ImGui"
+	IncludeDir["glm"] = "Hazel/vendor/glm"
 
 	group "Dependencies"
 		include "Hazel/vendor/GLFW"
@@ -39,7 +40,8 @@ workspace "HazelFollower"
 
 			"%{prj.name}/src/**.h",
 			"%{prj.name}/src/**.cpp",
-			-- "%{prj.name}/vendor/ImGui/imgui_tables.cpp"
+			"%{prj.name}/vendor/glm/glm/**.hpp",
+			"%{prj.name}/vendor/glm/glm/**.inl"
 		}
 
 		includedirs {
@@ -48,7 +50,8 @@ workspace "HazelFollower"
 			"%{prj.name}/vendor/spdlog/include",
 			"%{IncludeDir.GLFW}",
 			"%{IncludeDir.Glad}",
-			"%{IncludeDir.ImGui}"
+			"%{IncludeDir.ImGui}",
+			"%{IncludeDir.glm}"
 		}
 
 		links {
@@ -68,7 +71,6 @@ workspace "HazelFollower"
 				"HZ_PLATFORM_WINDOWS",
 				"HZ_BUILD_DLL",
 				"_WINDLL",
-				"IMGUI_IMPL_OPENGL_LOADER_CUSTOM",
 				"GLFW_INCLUDE_NONE"
 			}
 
@@ -111,7 +113,9 @@ workspace "HazelFollower"
 		includedirs {
 
 			"Hazel/vendor/spdlog/include",
-			"Hazel/src"
+			"Hazel/src",
+			"%{IncludeDir.glm}",
+			"%{IncludeDir.ImGui}"
 		}
 
 		links {

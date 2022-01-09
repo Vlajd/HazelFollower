@@ -5,6 +5,7 @@
 #include "Application.h"
 #include "Events\ApplicationEvent.h"
 #include "Log.h"
+#include "Input.h"
 
 
 namespace Hazel {
@@ -15,7 +16,7 @@ namespace Hazel {
 
 	Application::Application() {
 	
-		HZ_CORE_ASSERT(s_Instance, "Application Already Exists!")
+		HZ_CORE_ASSERT(!s_Instance, "Application Already Exists!")
 		s_Instance = this;
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -40,7 +41,12 @@ namespace Hazel {
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-		HZ_CORE_TRACE("{0}", e);
+
+
+		// [Log Events (commentBool exceptMouseMoved)]
+		//if (e.GetEventType() != EventType::MouseMoved)
+			//HZ_CORE_TRACE("{0}", e);
+
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
 

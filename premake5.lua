@@ -26,9 +26,10 @@ workspace "HazelFollower"
 
 	project "Hazel"
 		location "Hazel"
-		kind "SharedLib"
+		kind "StaticLib"
 		language "C++"
-		staticruntime "off"
+		cppdialect "C++20"
+		staticruntime "on"
 
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -63,14 +64,12 @@ workspace "HazelFollower"
 		}
 
 		filter "system:windows"
-			cppdialect "C++20"
 			systemversion "latest"
 
 			defines {
 
 				"HZ_PLATFORM_WINDOWS",
 				"HZ_BUILD_DLL",
-				"_WINDLL",
 				"GLFW_INCLUDE_NONE"
 			}
 
@@ -82,24 +81,26 @@ workspace "HazelFollower"
 		filter "configurations:Debug"
 			defines "HZ_DEBUG"
 			runtime "Debug"
-			symbols "On"
+			symbols "on"
 
 		filter "configurations:Release"
 			defines "HZ_RELEASE"
 			runtime "Release"
-			symbols "On"
+			symbols "on"
 
 		filter "configurations:Dist"
 			defines "HZ_DIST"
 			runtime "Release"
-			symbols "On"
-			optimize "On"
+			symbols "on"
+			optimize "on"
+
 
 	project "Sandbox"
 		location "Sandbox"
 		kind "ConsoleApp"
 		language "C++"
-		staticruntime "off"
+		cppdialect "C++20"
+		staticruntime "on"
 
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -113,9 +114,9 @@ workspace "HazelFollower"
 		includedirs {
 
 			"Hazel/vendor/spdlog/include",
+			"Hazel/vendor/ImGui",
 			"Hazel/src",
 			"%{IncludeDir.glm}",
-			"%{IncludeDir.ImGui}"
 		}
 
 		links {
@@ -124,7 +125,6 @@ workspace "HazelFollower"
 		}
 
 		filter "system:windows"
-			cppdialect "C++20"
 			systemversion "latest"
 
 			defines {
@@ -134,16 +134,13 @@ workspace "HazelFollower"
 
 		filter "configurations:Debug"
 			defines "HZ_DEBUG"
-			buildoptions "/MDd"
-			symbols "On"
+			symbols "on"
 
 		filter "configurations:Release"
 			defines "HZ_RELEASE"
-			buildoptions "/MD"
-			symbols "On"
+			symbols "on"
 
 		filter "configurations:Dist"
 			defines "HZ_DIST"
-			buildoptions "/MD"
-			symbols "On"
-			optimize "On"
+			symbols "on"
+			optimize "on"

@@ -45,6 +45,10 @@ workspace "HazelFollower"
 			"%{prj.name}/vendor/glm/glm/**.inl"
 		}
 
+		defines {
+			"_CRT_SECURE_NO_WARNINGS"
+		}
+
 		includedirs {
 
 			"%{prj.name}/src",
@@ -124,6 +128,8 @@ workspace "HazelFollower"
 			"Hazel"
 		}
 
+		linkoptions { "-IGNORE:4098" }
+
 		filter "system:windows"
 			systemversion "latest"
 
@@ -144,3 +150,4 @@ workspace "HazelFollower"
 			defines "HZ_DIST"
 			symbols "on"
 			optimize "on"
+

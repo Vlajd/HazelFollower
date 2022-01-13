@@ -86,6 +86,7 @@ workspace "HazelFollower"
 			defines "HZ_DEBUG"
 			runtime "Debug"
 			symbols "on"
+			disablewarnings "4996"
 
 		filter "configurations:Release"
 			defines "HZ_RELEASE"

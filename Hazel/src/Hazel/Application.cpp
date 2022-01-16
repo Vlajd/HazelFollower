@@ -1,9 +1,8 @@
 #include <hzpch.h>
-
-#include <glad\glad.h>
-
 #include "Application.h"
-#include "Events\ApplicationEvent.h"
+
+#include "Renderer/Renderer.h"
+
 #include "Log.h"
 #include "Input.h"
 
@@ -179,16 +178,22 @@ namespace Hazel {
 
 		while (m_Running) {
 
-			glClearColor(0.14f, 0.15f, 0.16f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColor(glm::vec4(0.14f, 0.15f, 0.16f, 1.0f));
+			RenderCommand::Clear();
 
-			m_BlueShader->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			#pragma region RendererScene
 
-			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES,m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+				Renderer::BeginScene();
+
+				m_BlueShader->Bind();
+				Renderer::Submit(m_SquareVA);
+
+				m_Shader->Bind();
+				Renderer::Submit(m_VertexArray);
+
+				Renderer::EndScene();
+
+			#pragma endregion
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

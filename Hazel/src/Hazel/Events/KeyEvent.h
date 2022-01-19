@@ -57,20 +57,20 @@ namespace Hazel {
 
 	class HAZEL_API KeyTypedEvent : public KeyEvent {
 
-	public:
-		KeyTypedEvent(int keyCode)
-			: KeyEvent(keyCode) {}
+		public:
+			KeyTypedEvent(int keyCode)
+				: KeyEvent(keyCode) {}
 
-		std::string ToString() const override {
+			std::string ToString() const override {
 
-			std::stringstream ss;
-			ss << "KeyTypedEvent: " << m_KeyCode;
-			return ss.str();
-		}
+				std::stringstream ss;
+				ss << "KeyTypedEvent: " << m_KeyCode;
+				return ss.str();
+			}
 
-		EVENT_CLASS_TYPE(KeyTyped)
+			EVENT_CLASS_TYPE(KeyTyped)
 
-	private:
-		int m_RepeatCount;
+		private:
+			int m_RepeatCount;
 	};
 }

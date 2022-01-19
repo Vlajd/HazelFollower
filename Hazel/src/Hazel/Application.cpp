@@ -6,13 +6,16 @@
 #include "Log.h"
 #include "Input.h"
 
+#include "KeyCodes.h"
+
 namespace Hazel {
 
 	#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() {
+	Application::Application()
+		: m_Camera( -1.6f, 1.6f, -0.9f, 0.9f ) {
 
 		HZ_CORE_ASSERT(!s_Instance, "Application Already Exists!")
 			s_Instance = this;
@@ -80,13 +83,15 @@ namespace Hazel {
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
 			out vec4 v_Color;
 
 			void main() {
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position, 1.0f);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0f);
 			}
 		)";
 
@@ -113,12 +118,14 @@ namespace Hazel {
 
 			layout(location = 0) in vec3 a_Position;
 
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
 
 			void main() {
 
 				v_Position = a_Position;
-				gl_Position = vec4(a_Position, 1.0f);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0f);
 			}
 		)";
 
@@ -162,9 +169,8 @@ namespace Hazel {
 
 
 		// [Log Events (commentBool exceptMouseMoved)]
-		//if (e.GetEventType() != EventType::MouseMoved)
-			//HZ_CORE_TRACE("{0}", e);
-
+		if (!e.IsInCategory(EventCategoryMouse))
+			HZ_CORE_TRACE("{0}", e);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
 
@@ -176,20 +182,36 @@ namespace Hazel {
 
 	void Application::Run() {
 
+		glm::vec3 m_pos = glm::vec3(0.0f);
+		float m_rot = 0.0f;
+
 		while (m_Running) {
 
 			RenderCommand::SetClearColor(glm::vec4(0.14f, 0.15f, 0.16f, 1.0f));
 			RenderCommand::Clear();
 
+			if (Input::IsKeyPressed(HZ_KEY_W))
+				m_pos.y += 0.02f;
+			if (Input::IsKeyPressed(HZ_KEY_S))
+				m_pos.y -= 0.02f;
+			if (Input::IsKeyPressed(HZ_KEY_D))
+				m_pos.x += 0.02f;
+			if (Input::IsKeyPressed(HZ_KEY_A))
+				m_pos.x -= 0.02f;
+			if (Input::IsKeyPressed(HZ_KEY_Q))
+				m_rot += 0.5f;
+			if (Input::IsKeyPressed(HZ_KEY_E))
+				m_rot -= 0.5f;
+
+			m_Camera.SetPosition(m_pos);
+			m_Camera.SetRotation(m_rot);
+
 			#pragma region RendererScene
 
-				Renderer::BeginScene();
+				Renderer::BeginScene(m_Camera);
 
-				m_BlueShader->Bind();
-				Renderer::Submit(m_SquareVA);
-
-				m_Shader->Bind();
-				Renderer::Submit(m_VertexArray);
+				Renderer::Submit(m_BlueShader, m_SquareVA);
+				Renderer::Submit(m_Shader, m_VertexArray);
 
 				Renderer::EndScene();
 
@@ -199,8 +221,10 @@ namespace Hazel {
 				layer->OnUpdate();
 
 			m_ImGuiLayer->Begin();
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnImGuiRender();
+
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();

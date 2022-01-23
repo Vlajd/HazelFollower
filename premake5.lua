@@ -17,6 +17,7 @@ workspace "HazelFollower"
 	IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 	IncludeDir["ImGui"] = "Hazel/vendor/ImGui"
 	IncludeDir["glm"] = "Hazel/vendor/glm"
+	IncludeDir["stb"] = "Hazel/vendor/stb"
 
 	group "Dependencies"
 		include "Hazel/vendor/GLFW"
@@ -41,6 +42,8 @@ workspace "HazelFollower"
 
 			"%{prj.name}/src/**.h",
 			"%{prj.name}/src/**.cpp",
+			"%{prj.name}/vendor/stb/**.cpp",
+			"%{prj.name}/vendor/stb/**.h",
 			"%{prj.name}/vendor/glm/glm/**.hpp",
 			"%{prj.name}/vendor/glm/glm/**.inl"
 		}
@@ -56,7 +59,8 @@ workspace "HazelFollower"
 			"%{IncludeDir.GLFW}",
 			"%{IncludeDir.Glad}",
 			"%{IncludeDir.ImGui}",
-			"%{IncludeDir.glm}"
+			"%{IncludeDir.glm}",
+			"%{IncludeDir.stb}"
 		}
 
 		links {
